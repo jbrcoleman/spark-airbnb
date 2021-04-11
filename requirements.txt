@@ -1,0 +1,5 @@
+black
+requests
+pylint
+pytest
+pytest-cov
