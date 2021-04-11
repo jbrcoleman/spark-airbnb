@@ -3,3 +3,4 @@ requests
 pylint
 pytest
 pytest-cov
+requests_testing

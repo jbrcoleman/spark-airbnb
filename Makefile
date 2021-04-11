@@ -5,11 +5,11 @@ install:
 	pip3 install -r requirements.txt --user
 
 format:
-	python3 -m black spark-airbnb/*.py tests/*.py
+	python3 -m black spark_airbnb/*.py tests/*.py
 
 test:
-	python3 -m pytest -vv --cov=spark-airbnb tests/*.py
+	python3 -m pytest -vv --cov=spark_airbnb tests/*.py
 
 lint:
-	python3 -m pylint --disable=R,C tests/*.py spark-airbnb/*.py
+	python3 -m pylint --disable=R,C tests/*.py spark_airbnb/*.py
 all: install lint test
