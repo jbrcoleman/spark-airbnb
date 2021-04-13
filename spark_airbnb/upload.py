@@ -20,6 +20,6 @@ def upload(file_names):
 if __name__ == "__main__":
     dir_name = 'data'
     path = f"../{dir_name}"
-    file_names = os.listdir(path)
-    upload(file_names)
+    data_file_names = os.listdir(path)
+    upload(data_file_names)
     
