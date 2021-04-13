@@ -5,4 +5,3 @@ pytest
 pytest-cov
 requests_testing
 azure-storage-blob
-azure-storage
