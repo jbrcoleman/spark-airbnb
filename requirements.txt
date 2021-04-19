@@ -5,3 +5,4 @@ pytest
 pytest-cov
 requests_testing
 azure-storage-blob==2.1.0
+pandas
