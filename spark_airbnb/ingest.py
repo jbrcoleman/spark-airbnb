@@ -1,5 +1,6 @@
 import requests
-from spark_airbnb.upload import setup_path, upload, azure_credentials
+#from spark_airbnb.upload import setup_path, upload, azure_credentials
+from spark_airbnb.upload_aws import upload_file
 import argparse
 import os
 from azure.storage.blob import BlockBlobService
@@ -107,7 +108,7 @@ LISTING_URLS = [
 def ingest_csv(url, location):
     req = requests.get(url)
     url_content = req.content
-    csv_file = open(f"../data/{location}.csv.gz", "wb")
+    csv_file = open(f"data/{location}.csv.gz", "wb")
 
     csv_file.write(url_content)
     csv_file.close()
@@ -117,6 +118,11 @@ def set_city(path, csv_file, city):
     df = pd.read_csv(f"{path}/{csv_file}")
     df["Metro"] = city
     df.to_csv(f"{path}/{csv_file}")
+
+def setup_path(directory):
+    dir_name = directory
+    path = f"{dir_name}"
+    return path
 
 
 if __name__ == "__main__":
@@ -135,12 +141,20 @@ if __name__ == "__main__":
         help="Downloads all world cities data if flag is set else downloads only \
                     US city data",
     )
-    args = parser.parse_args()
-
-    account_name, account_key = azure_credentials()
-    block_blob_service = BlockBlobService(
-        account_name=account_name, account_key=account_key
+    parser.add_argument(
+       "- c",
+       "--cloud",
+       default="aws",
+       action="store",
+       help="choose aws or azure",
     )
+    args = parser.parse_args()
+    
+    if args.cloud == "azure":
+        account_name, account_key = azure_credentials()
+        block_blob_service = BlockBlobService(
+            account_name=account_name, account_key=account_key
+        )
     container = args.name
     if args.all_data == False:
 
@@ -150,5 +164,8 @@ if __name__ == "__main__":
             file_path = setup_path("data")
             data_file_names = os.listdir(file_path)
             set_city(file_path, data_file_names[0], y)
-            upload(data_file_names, container, file_path)
+            if args.cloud == "azure":
+                upload(data_file_names, container, file_path)
+            if args.cloud == "aws":
+                upload_file(f"{file_path}/{data_file_names[0]}", container,data_file_names[0])
             os.remove(f"{file_path}/{data_file_names[0]}")
